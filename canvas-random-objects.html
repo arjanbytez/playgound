@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+</head>
+<title>Canvas drawing random objects</title>
+<body>
+
+
+Canvas random objects
+<input id="resetBtn" type="button" value="reset" align="center" onclick="resetDrawing();" />
+<input id="stopBtn" type="button" value="stop" align="center" onclick="stopDrawing();" />
+<canvas id="canvas" border="1"></canvas>
+<script>
+
+// init
+const canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
+var width = window.innerWidth-40;
+var height = window.innerHeight-40;
+canvas.width = width;
+canvas.height = height;
+intervals = []; // keep track of intervals, can be >1
+
+// TODO
+// - make older objects disappear
+
+// clear canvas, reset to startposition
+function resetDrawing() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  var w = canvas.width; // hack for clearing <<complete>> canvas
+  canvas.width = 1;
+  canvas.width = w;
+  //moveRight = true;
+  //moveDown = true;
+  //posCenter = [150, 150];
+  intervals.push(setInterval(drawObject, 50)); // called again because stopDrawing overrides this
+}
+
+function stopDrawing() {
+  // stop all intervals
+  for (var i = 0; i < intervals.length; i++) {
+    clearInterval(intervals[i]);
+  }
+  intervals.length = 0;
+}
+
+function drawObject() {
+
+  // random position
+  posX = Math.random() * (width-50);
+  posY = Math.random() * (height-50);
+
+  // random size
+  size = Math.random() * 50;
+
+  // random color with cool trick
+  // found on https://www.paulirish.com/2009/random-hex-color-code-snippets/
+  randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+
+  // random lineWidth
+  ctx.lineWidth = Math.random() * 8;
+
+  ctx.beginPath();
+  ctx.arc(posX, posY, size, 0, 2*Math.PI);
+  ctx.strokeStyle = randomColor;
+  ctx.stroke();
+}
+
+// set interval, keep id for stopping later
+resetDrawing();
+intervals.push(setInterval(drawObject, 50));
+
+</script>
+
+</body></html>
